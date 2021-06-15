@@ -7,11 +7,12 @@ import {
   setSearchedUsers,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
+import Cookies from "js-cookie";
 
 axios.interceptors.request.use(async function (config) {
-  const token = await localStorage.getItem("messenger-token");
-  config.headers["x-access-token"] = token;
-
+  // set csrf token to every request header
+  const csrfToken = Cookies.get("csrfToken");
+  config.headers["CSRF-Token"] = csrfToken;
   return config;
 });
 

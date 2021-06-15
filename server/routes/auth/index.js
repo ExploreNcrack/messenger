@@ -94,4 +94,10 @@ router.get("/user", (req, res, next) => {
   }
 });
 
+router.get("/csrf-token", (req, res) => {
+  // get csrf token
+  res.cookie("csrfToken", req.csrfToken());
+  res.sendStatus(200);
+});
+
 module.exports = router;
