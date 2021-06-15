@@ -9,13 +9,25 @@ import {
   FormControl,
   TextField,
   FormHelperText,
+  makeStyles,
 } from "@material-ui/core";
 import { register } from "./store/utils/thunkCreators";
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+}));
 
 const Login = (props) => {
   const history = useHistory();
   const { user, register } = props;
   const [formErrorMessage, setFormErrorMessage] = useState({});
+
+  const classes = useStyles();
 
   const handleRegister = async (event) => {
     event.preventDefault();
@@ -37,16 +49,33 @@ const Login = (props) => {
   }
 
   return (
-    <Grid container justify="center">
-      <Box>
-        <Grid container item>
-          <Typography>Need to log in?</Typography>
-          <Button onClick={() => history.push("/login")}>Login</Button>
+    <div className={classes.paper}>
+      <Grid container justify="flex-end" alignItems="center">
+        <Box m={4} color="text.disabled">
+          <Typography px={2}>Already have an account?</Typography>
+        </Box>
+        <Box>
+          <Button
+            variant="outlined"
+            style={{ color: "#3A8DFF" }}
+            size="large"
+            onClick={() => history.push("/login")}
+          >
+            Login
+          </Button>
+        </Box>
+      </Grid>
+      <Box my={5} style={{ width: "70%", textAlign: "center" }}>
+        <Grid container my={4} justify="flex-start">
+          <Typography component="h1" variant="h4">
+            Create an account.
+          </Typography>
         </Grid>
+        <Box my={3}></Box>
         <form onSubmit={handleRegister}>
-          <Grid>
-            <Grid>
-              <FormControl>
+          <Grid container direction="column" spacing={5}>
+            <Grid item>
+              <FormControl fullWidth={true}>
                 <TextField
                   aria-label="username"
                   label="Username"
@@ -56,8 +85,8 @@ const Login = (props) => {
                 />
               </FormControl>
             </Grid>
-            <Grid>
-              <FormControl>
+            <Grid item>
+              <FormControl fullWidth={true}>
                 <TextField
                   label="E-mail address"
                   aria-label="e-mail address"
@@ -67,8 +96,11 @@ const Login = (props) => {
                 />
               </FormControl>
             </Grid>
-            <Grid>
-              <FormControl error={!!formErrorMessage.confirmPassword}>
+            <Grid item>
+              <FormControl
+                error={!!formErrorMessage.confirmPassword}
+                fullWidth={true}
+              >
                 <TextField
                   aria-label="password"
                   label="Password"
@@ -82,8 +114,11 @@ const Login = (props) => {
                 </FormHelperText>
               </FormControl>
             </Grid>
-            <Grid>
-              <FormControl error={!!formErrorMessage.confirmPassword}>
+            <Grid item>
+              <FormControl
+                error={!!formErrorMessage.confirmPassword}
+                fullWidth={true}
+              >
                 <TextField
                   label="Confirm Password"
                   aria-label="confirm password"
@@ -97,13 +132,24 @@ const Login = (props) => {
                 </FormHelperText>
               </FormControl>
             </Grid>
-            <Button type="submit" variant="contained" size="large">
-              Create
-            </Button>
+            <Box my={2} style={{ textAlign: "center" }}>
+              <Button
+                type="submit"
+                style={{
+                  width: "30%",
+                  backgroundColor: "#3A8DFF",
+                  color: "white",
+                }}
+                variant="contained"
+                size="large"
+              >
+                Create
+              </Button>
+            </Box>
           </Grid>
         </form>
       </Box>
-    </Grid>
+    </div>
   );
 };
 
