@@ -28,7 +28,11 @@ router.post("/register", async (req, res, next) => {
     );
 
     // set cookie
-    res.cookie("token", token, { httpOnly: true, maxAge: 86400 });
+    res.cookie("token", token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 86400),
+      maxAge: 86400,
+    });
 
     res.json({
       ...user.dataValues,
@@ -69,7 +73,11 @@ router.post("/login", async (req, res, next) => {
         { expiresIn: 86400 }
       );
       // set cookie
-      res.cookie("token", token, { httpOnly: true, maxAge: 86400 });
+      res.cookie("token", token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 86400),
+        maxAge: 86400,
+      });
       res.json({
         ...user.dataValues,
         token,
