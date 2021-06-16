@@ -33,8 +33,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '30pt'
   },
   image: {
-    backgroundImage: 'url(bg-img.png)',
-    backgroundColor: 'linear-gradient(to bottom, #3A8DFF 85%, #86B9FF)',
+    backgroundImage: 'linear-gradient(to bottom, rgb(58, 141, 255, 0.85), rgb(134, 185, 255, 0.85)), url("bg-img.png")',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
