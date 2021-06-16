@@ -10,7 +10,7 @@ import {
   TextField,
   makeStyles,
 } from "@material-ui/core";
-import { login } from "./store/utils/thunkCreators";
+import { login } from "../../store/utils/thunkCreators";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,8 +47,8 @@ const Login = (props) => {
         </Box>
         <Box>
           <Button
-            variant="outlined"
-            style={{ color: "#3A8DFF" }}
+            variant="contained"
+            style={{ color: "#3A8DFF", background: "white" }}
             size="large"
             onClick={() => history.push("/register")}
           >
