@@ -14,7 +14,7 @@ const sessionStore = new SequelizeStore({ db });
 
 const ignoredMethods = ["GET"];
 
-const csrfProtection = csrf({ ignoredMethods, cookie: true });
+const csrfProtection = csrf({ ignoredMethods, cookie: { httpOnly: true, } });
 
 const { json, urlencoded } = express;
 
@@ -27,8 +27,6 @@ app.use(express.static(join(__dirname, "public")));
 
 // setup route middleware for cookie parser
 app.use(cookieParser());
-// setup route middlewares for csrf token
-app.use(csrfProtection);
 
 app.use(function (req, res, next) {
   const token = req.cookies.token;
@@ -49,8 +47,12 @@ app.use(function (req, res, next) {
   }
 });
 
+
+
 // require api routes here after I create them
 app.use("/auth", require("./routes/auth"));
+// setup route middlewares for csrf token
+app.use(csrfProtection);
 app.use("/api", require("./routes/api"));
 
 // catch 404 and forward to error handler
