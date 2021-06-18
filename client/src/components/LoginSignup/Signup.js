@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  formDiv: {
+    width: "70%", 
+    textAlign: "center"
+  }
 }));
 
 const Login = (props) => {
@@ -57,15 +61,14 @@ const Login = (props) => {
         <Box>
           <Button
             variant="contained"
-            style={{ color: "#3A8DFF", background: "white" }}
-            size="large"
+            style={{ color: "#3A8DFF", background: "white", width: "170px" }}
             onClick={() => history.push("/login")}
           >
             Login
           </Button>
         </Box>
       </Grid>
-      <Box my={5} style={{ width: "70%", textAlign: "center" }}>
+      <Box my={5} className={classes.formDiv}>
         <Grid container my={4} justify="flex-start">
           <Typography component="h1" variant="h4">
             Create an account.
@@ -135,13 +138,9 @@ const Login = (props) => {
             <Box my={2} style={{ textAlign: "center" }}>
               <Button
                 type="submit"
-                style={{
-                  width: "30%",
-                  backgroundColor: "#3A8DFF",
-                  color: "white",
-                }}
+                fullWidth
+                color="primary"
                 variant="contained"
-                size="large"
               >
                 Create
               </Button>
