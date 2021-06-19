@@ -73,6 +73,7 @@ router.get("/", async (req, res, next) => {
       conversations[i] = convoJSON;
     }
 
+    res.cookie("csrfToken", req.csrfToken(), { expires: new Date(Date.now() + 86400), });
     res.json(conversations);
   } catch (error) {
     next(error);

@@ -15,6 +15,15 @@ export const theme = createMuiTheme({
       input: {
         fontWeight: "bold"
       }
+    },
+    MuiButton: {
+      root: {
+        padding: "15px",
+        fontSize: "12pt"
+      },
+      fullWidth: {
+        maxWidth: "182px",
+      }
     }
   },
   palette: {
