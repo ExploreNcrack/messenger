@@ -23,6 +23,11 @@ const useStyles = makeStyles((theme) => ({
   formDiv: {
     width: "70%", 
     textAlign: "center"
+  },
+  linkButton: {
+    color: "#3A8DFF", 
+    background: "white", 
+    width: "170px"
   }
 }));
 
@@ -61,7 +66,7 @@ const Login = (props) => {
         <Box>
           <Button
             variant="contained"
-            style={{ color: "#3A8DFF", background: "white", width: "170px" }}
+            className={classes.linkButton}
             onClick={() => history.push("/login")}
           >
             Login

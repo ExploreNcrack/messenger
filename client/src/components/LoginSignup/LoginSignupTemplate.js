@@ -50,7 +50,7 @@ const Template = (props) => {
       <Grid container item spacing={0} xs={false} sm={5} md={4} className={classes.image} >
         <Hidden smDown>
           <Grid item xs={false} sm={12} className={classes.chatIconDiv}>
-            <img className={classes.chatIcon} src="/images/bubble.svg" alt="" />
+            <img className={classes.chatIcon} src="/images/bubble.svg" alt="chat icon" />
             <Typography  sm={12} className={classes.titleFont}>Converse with anyone with any language</Typography>
           </Grid>
         </Hidden>
