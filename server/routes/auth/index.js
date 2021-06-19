@@ -26,9 +26,15 @@ router.post("/register", async (req, res, next) => {
       process.env.SESSION_SECRET,
       { expiresIn: 86400 }
     );
+
+    // set cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 86400),
+    });
+
     res.json({
       ...user.dataValues,
-      token,
     });
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
@@ -64,9 +70,13 @@ router.post("/login", async (req, res, next) => {
         process.env.SESSION_SECRET,
         { expiresIn: 86400 }
       );
+      // set cookie
+      res.cookie("token", token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 86400),
+      });
       res.json({
         ...user.dataValues,
-        token,
       });
     }
   } catch (error) {
@@ -75,6 +85,9 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.delete("/logout", (req, res, next) => {
+  // Clearing the cookie
+  res.clearCookie("token", { httpOnly: true });
+  res.clearCookie("csrfToken");
   res.sendStatus(204);
 });
 
