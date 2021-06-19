@@ -30,8 +30,8 @@ router.post("/", async (req, res, next) => {
       }
       const message = await Message.create({ senderId, text, conversationId });
       // update the existing conversation updatedAt timestamp so that we can use it for sorting most recent conversation
-      conversation[0].changed('updatedAt', true);
-      await conversation[0].update({ updatedAt: db.fn('NOW') });
+      conversation.changed('updatedAt', true);
+      await conversation.update({ updatedAt: db.fn('NOW') });
       return res.json({ message, sender });
     }
     // if we don't have conversation id, find a conversation to make sure it doesn't already exist
