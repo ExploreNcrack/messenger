@@ -1,3 +1,11 @@
+import io from "socket.io-client";
+import store from "../../store";
+import {
+  setNewMessage,
+  removeOfflineUser,
+  addOnlineUser,
+} from "../../store/conversations";
+
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
@@ -80,3 +88,45 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     }
   });
 };
+
+export const createSocketConnection = () => {
+  const socket = io(window.location.origin, { withCredentials: true, });
+  socket.on("connect", () => {
+    console.log("connected to server");
+  
+    socket.on("add-online-user", (id) => {
+      store.dispatch(addOnlineUser(id));
+    });
+  
+    socket.on("remove-offline-user", (id) => {
+      store.dispatch(removeOfflineUser(id));
+    });
+    socket.on("new-message", (data) => {
+      store.dispatch(setNewMessage(data.message, data.sender));
+    });
+  });
+  return socket;
+}
+
+export const emitGoOnlineEventToServer = (state) => {
+  if (!state) {
+    state = createSocketConnection();
+  }
+  state.emit("go-online");
+  return state;
+}
+
+export const emitLogOutEventToServer = (state) => {
+  state.emit("logout");
+  return null;
+}
+
+export const emitNewMessageToServer = (state, payload) => {
+  const { message, sender, recipientId } = payload;
+  state.emit("new-message", {
+    message,
+    recipientId,
+    sender,
+  });
+  return state;
+}

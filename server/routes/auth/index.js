@@ -75,6 +75,7 @@ router.post("/login", async (req, res, next) => {
         httpOnly: true,
         expires: new Date(Date.now() + 86400),
       });
+      req.session.userId = user.id;
       res.json({
         ...user.dataValues,
       });
@@ -88,6 +89,7 @@ router.delete("/logout", (req, res, next) => {
   // Clearing the cookie
   res.clearCookie("token", { httpOnly: true });
   res.clearCookie("csrfToken");
+  res.clearCookie("connect.sid", { httpOnly: true });
   res.sendStatus(204);
 });
 
