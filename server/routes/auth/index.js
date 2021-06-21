@@ -32,7 +32,7 @@ router.post("/register", async (req, res, next) => {
       httpOnly: true,
       expires: new Date(Date.now() + 86400),
     });
-
+    req.session.userId = user.id;
     res.json({
       ...user.dataValues,
     });
