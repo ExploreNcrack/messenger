@@ -4,6 +4,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  incrementOtherUserConversationUnreadMessageCount,
 } from "../conversations";
 import { emitGoOnline, emitLogOut, emitNewMessage } from "../socket";
 import { gotUser, setFetchingStatus } from "../user";
@@ -81,6 +82,14 @@ const saveMessage = async (body) => {
   return data;
 };
 
+export const updateConversationMessageRead = async (conversationId) => {
+  try {
+    await axios.put(`/api/conversations/${conversationId}`);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
@@ -93,6 +102,12 @@ export const postMessage = (body) => async (dispatch) => {
       dispatch(setNewMessage(data.message));
     }
     dispatch(emitNewMessage(data.message, body.recipientId, data.sender));
+    // increment other user unread message count
+    dispatch(
+      incrementOtherUserConversationUnreadMessageCount(
+        data.message.conversationId
+      )
+    );
   } catch (error) {
     console.error(error);
   }
