@@ -75,7 +75,8 @@ router.get("/", async (req, res, next) => {
       // set properties for rendering other user message read
       const userMessages = convoJSON.messages.filter((message) => message.senderId === userId);
       if (convoJSON.otherUserUnReadMessageCount < userMessages.length) {
-        userMessages[userMessages.length-1-convoJSON.otherUserUnReadMessageCount].renderOtherUserMessageRead = true;
+        const otherUserLastMessageReadPosition = userMessages.length-1-convoJSON.otherUserUnReadMessageCount;
+        userMessages[otherUserLastMessageReadPosition].renderOtherUserMessageRead = true;
       }
       conversations[i] = convoJSON;
     }

@@ -31,7 +31,8 @@ export const addMessageToStore = (state, payload) => {
   );
   const convoCopy = { ...existingConvo };
   // add new message to the convo
-  convoCopy.messages.push(message);
+  const messages = [...convoCopy.messages];
+  convoCopy.messages = [...messages, message];
   // update latest message
   convoCopy.latestMessageText = message.text;
   state = state.filter((convo) => convo.id !== message.conversationId);
@@ -158,7 +159,8 @@ export const addNewConvoToStore = (state, recipientId, message) => {
   );
   const convoCopy = { ...existingConvo };
   convoCopy.id = message.conversationId;
-  convoCopy.messages.push(message);
+  const messages = [...convoCopy.messages];
+  convoCopy.messages = [...messages, message];
   convoCopy.latestMessageText = message.text;
   state = state.filter((convo) => convo.otherUser.id !== recipientId);
   // put this convo to the front of the list
