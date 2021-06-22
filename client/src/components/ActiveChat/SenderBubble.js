@@ -44,13 +44,7 @@ const SenderBubble = (props) => {
       <Box className={classes.bubble}>
         <Typography className={classes.text}>{text}</Typography>
       </Box>
-      <Avatar
-        className={
-          renderOtherUserMessageRead ? classes.profilePic : classes.hide
-        }
-        alt={username}
-        src={photoUrl}
-      ></Avatar>
+      { renderOtherUserMessageRead && <Avatar className={classes.profilePic} alt={username} src={photoUrl} /> }
     </Box>
   );
 };
