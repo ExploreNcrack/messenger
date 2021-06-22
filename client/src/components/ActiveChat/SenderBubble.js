@@ -29,10 +29,6 @@ const useStyles = makeStyles(() => ({
     height: 15,
     width: 15,
   },
-  hide: {
-    display: "none",
-    visibility: "hidden",
-  },
 }));
 
 const SenderBubble = (props) => {
