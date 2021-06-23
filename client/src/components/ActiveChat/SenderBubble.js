@@ -9,13 +9,13 @@ const useStyles = makeStyles(() => ({
     alignItems: "flex-end",
   },
   date: {
-    fontSize: 11,
+    fontSize: 13,
     color: "#BECCE2",
     fontWeight: "bold",
     marginBottom: 5,
   },
   text: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#91A3C0",
     letterSpacing: -0.2,
     padding: 8,
