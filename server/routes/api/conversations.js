@@ -95,7 +95,7 @@ router.put("/:conversationId", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const { conversationId } = req.params;
-    const conversation = await Conversation.isPartOfThisConversation(conversationId, req.user.id);
+    const conversation = await Conversation.getConversationByUserIdAndConversationId(conversationId, req.user.id);
     if (!conversation) {
       return res.sendStatus(403);
     }

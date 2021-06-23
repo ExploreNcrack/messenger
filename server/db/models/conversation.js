@@ -34,7 +34,7 @@ Conversation.findConversation = async function (user1Id, user2Id) {
 };
 
 // check if this user is actually part of this conversation,  given conversationId and userId
-Conversation.isPartOfThisConversation = async function (
+Conversation.getConversationByUserIdAndConversationId = async function (
   conversationId,
   userId
 ) {
