@@ -10,7 +10,6 @@ const db = require("./db");
 const { User } = require("./db/models");
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
-const passport = require("passport");
 // create store for sessions to persist in database
 const sessionStore = new SequelizeStore({ db });
 
@@ -36,8 +35,6 @@ app.use(session({
   saveUninitialized: true,
   store: sessionStore
 }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(function (req, res, next) {
   const token = req.cookies.token;
