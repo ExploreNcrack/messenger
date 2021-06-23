@@ -11,8 +11,6 @@ const { app, sessionStore, session } = require("../app");
 const http = require("http");
 const db = require("../db");
 const onlineUsers = require("../onlineUsers");
-const cookieParser = require("cookie-parser");
-const passport = require("passport");
 
 /**
  * Get port from environment and store in Express.
@@ -47,21 +45,20 @@ io.use(
     })
   )
 );
-io.use(wrap(passport.initialize()));
-io.use(wrap(passport.session()));
+
+function logOutDisconnectHandler(socket) {
+  const id = socket.request.session.userId;
+  if (id in onlineUsers) {
+    onlineUsers[id].delete(socket.id);
+    if (onlineUsers[id].size == 0) {
+      delete onlineUsers[id];
+      socket.broadcast.emit("remove-offline-user", id);
+    }
+    socket.disconnect();
+  }
+}
 
 io.on("connection", (socket) => {
-  function logOutDisconnectHandler() {
-    const id = socket.request.session.userId;
-    if (id in onlineUsers) {
-      onlineUsers[id].delete(socket.id);
-      if (onlineUsers[id].size == 0) {
-        delete onlineUsers[id];
-        socket.broadcast.emit("remove-offline-user", id);
-      }
-      socket.disconnect();
-    }
-  }
 
   socket.on("go-online", () => {
     const id = socket.request.session.userId;
@@ -93,8 +90,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("logout", () => logOutDisconnectHandler());
-  socket.on("disconnect", () => logOutDisconnectHandler());
+  socket.on("logout", () => logOutDisconnectHandler(socket));
+  socket.on("disconnect", () => logOutDisconnectHandler(socket));
 });
 
 sessionStore
