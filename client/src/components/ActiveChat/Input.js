@@ -45,7 +45,6 @@ const Input = (props) => {
     };
     await props.postMessage(reqBody);
     setText("");
-    setFormErrorMessage({ messageCannotBeEmpty: "" });
   };
 
   return (
