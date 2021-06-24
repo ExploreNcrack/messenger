@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FormControl, FilledInput } from "@material-ui/core";
+import { FormControl, FilledInput, FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
@@ -19,14 +19,23 @@ const useStyles = makeStyles(() => ({
 
 const Input = (props) => {
   const [text, setText] = useState("");
+  const [formErrorMessage, setFormErrorMessage] = useState({});
   const classes = useStyles();
 
   const handleChange = (event) => {
     setText(event.target.value);
+    setFormErrorMessage({ messageCannotBeEmpty: "" });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!event.target.text.value || event.target.text.value.length === 0) {
+      // empty string message
+      setFormErrorMessage({
+        messageCannotBeEmpty: "Message to be sent cannot be empty",
+      });
+      return;
+    }
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
     const reqBody = {
       text: event.target.text.value,
@@ -36,11 +45,17 @@ const Input = (props) => {
     };
     await props.postMessage(reqBody);
     setText("");
+    setFormErrorMessage({ messageCannotBeEmpty: "" });
   };
 
   return (
     <form className={classes.root} onSubmit={handleSubmit}>
-      <FormControl fullWidth hiddenLabel>
+      <FormHelperText>{formErrorMessage.messageCannotBeEmpty}</FormHelperText>
+      <FormControl
+        fullWidth
+        hiddenLabel
+        error={!!formErrorMessage.messageCannotBeEmpty}
+      >
         <FilledInput
           classes={{ root: classes.input }}
           disableUnderline
@@ -52,7 +67,7 @@ const Input = (props) => {
       </FormControl>
     </form>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {
@@ -69,7 +84,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Input);
+export default connect(mapStateToProps, mapDispatchToProps)(Input);
