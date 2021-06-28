@@ -24,10 +24,22 @@ export const theme = createMuiTheme({
       fullWidth: {
         maxWidth: "182px",
       }
+    },
+    MuiCssBaseline: {
+      '@global': {
+        '*': {
+          'scrollbar-width': 'thin',
+        },
+        '*::-webkit-scrollbar': {
+          width: '4px',
+          height: '4px',
+        }
+      }
     }
   },
   palette: {
     primary: { main: "#3A8DFF" },
     secondary: { main: "#B0B0B0" }
   }
+  
 });

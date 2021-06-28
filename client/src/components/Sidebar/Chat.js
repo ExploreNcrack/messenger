@@ -1,14 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 import { Box, Badge } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { setConversationUnreadMessageCount } from "../../store/conversations";
 import { connect } from "react-redux";
 import { emitMessageRead } from "../../store/socket";
 import { updateConversationMessageRead } from "../../store/utils/thunkCreators";
 
-const styles = {
+const useStyles = makeStyles(() => ({
   root: {
     borderRadius: 8,
     height: 80,
@@ -21,43 +21,42 @@ const styles = {
       cursor: "grab",
     },
   },
-};
+}));
 
-class Chat extends Component {
-  handleClick = async (conversation) => {
-    await this.props.setActiveChat(conversation.otherUser.username);
+const Chat = (props) => {
+  const classes = useStyles();
+  const otherUser = props.conversation.otherUser;
+
+  const handleClick = async (conversation) => {
+    await props.setActiveChat(conversation.otherUser.username);
     if (conversation && conversation.messages.length > 0) {
-      await this.props.setConversationUnreadMessageCount(conversation.id, 0);
+      await props.setConversationUnreadMessageCount(conversation.id, 0);
       // emit message read event to other user
-      this.props.emitMessageRead(conversation.id, conversation.otherUser.id);
+      props.emitMessageRead(conversation.id, conversation.otherUser.id);
       // tell backend server to update unread message count for this conversation
       await updateConversationMessageRead(conversation.id);
     }
   };
 
-  render() {
-    const { classes } = this.props;
-    const otherUser = this.props.conversation.otherUser;
-    return (
-      <Box
-        onClick={() => this.handleClick(this.props.conversation)}
-        className={classes.root}
-      >
-        <BadgeAvatar
-          photoUrl={otherUser.photoUrl}
-          username={otherUser.username}
-          online={otherUser.online}
-          sidebar={true}
-        />
-        <ChatContent conversation={this.props.conversation} />
-        <Badge
-          color="primary"
-          badgeContent={this.props.conversation.unReadMessageCount}
-        ></Badge>
-      </Box>
-    );
-  }
-}
+  return (
+    <Box
+      onClick={() => handleClick(props.conversation)}
+      className={classes.root}
+    >
+      <BadgeAvatar
+        photoUrl={otherUser.photoUrl}
+        username={otherUser.username}
+        online={otherUser.online}
+        sidebar={true}
+      />
+      <ChatContent conversation={props.conversation} />
+      <Badge
+        color="primary"
+        badgeContent={props.conversation.unReadMessageCount}
+      ></Badge>
+    </Box>
+  );
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -76,4 +75,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(Chat));
+export default connect(null, mapDispatchToProps)(Chat);

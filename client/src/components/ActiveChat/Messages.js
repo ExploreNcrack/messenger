@@ -1,13 +1,31 @@
-import React from "react";
-import { Box } from "@material-ui/core";
+import React, { useEffect, useRef } from "react";
+import { Box, makeStyles } from "@material-ui/core";
 import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
 
+const useStyles = makeStyles(() => ({
+  messageWrapper: {
+    height: "70vh",
+    overflow: "auto",
+  },
+}));
+
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
+  const classes = useStyles();
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
-    <Box>
+    <Box className={classes.messageWrapper}>
       {messages.map((message) => {
         const time = moment(message.createdAt).format("h:mm");
 
@@ -32,6 +50,7 @@ const Messages = (props) => {
           />
         );
       })}
+      <div ref={messagesEndRef} />
     </Box>
   );
 };
