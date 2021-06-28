@@ -90,6 +90,23 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("message-read", (data) => {
+    const id = socket.request.session.userId;
+    socket.broadcast.to(id).emit("message-read", {
+      // syn message read to other devices
+      conversationId: data.conversationId,
+      senderId: id,
+      recipientId: data.recipientId,
+    });
+    if (data.recipientId in onlineUsers) {
+      socket.to(data.recipientId).emit("message-read", {
+        conversationId: data.conversationId,
+        senderId: id,
+        recipientId: data.recipientId,
+      });
+    }
+  });
+
   socket.on("logout", () => logOutDisconnectHandler(socket));
   socket.on("disconnect", () => logOutDisconnectHandler(socket));
 });

@@ -19,7 +19,7 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id"],
+      attributes: ["id", "user1UnreadMessageCount", "user2UnreadMessageCount"],
       include: [
         { model: Message,  },
         {
@@ -47,16 +47,19 @@ router.get("/", async (req, res, next) => {
       ],
       order: [["updatedAt", "DESC"], [Message, "createdAt", "ASC"]],
     });
-
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
 
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
+        convoJSON.unReadMessageCount = convoJSON.user2UnreadMessageCount;
+        convoJSON.otherUserUnReadMessageCount = convoJSON.user1UnreadMessageCount;
         convoJSON.otherUser = convoJSON.user1;
         delete convoJSON.user1;
       } else if (convoJSON.user2) {
+        convoJSON.unReadMessageCount = convoJSON.user1UnreadMessageCount;
+        convoJSON.otherUserUnReadMessageCount = convoJSON.user2UnreadMessageCount;
         convoJSON.otherUser = convoJSON.user2;
         delete convoJSON.user2;
       }
@@ -67,14 +70,45 @@ router.get("/", async (req, res, next) => {
       } else {
         convoJSON.otherUser.online = false;
       }
-
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length - 1].text;
+      // set properties for rendering other user message read
+      const userMessages = convoJSON.messages.filter((message) => message.senderId === userId);
+      if (convoJSON.otherUserUnReadMessageCount < userMessages.length) {
+        const otherUserLastMessageReadPosition = userMessages.length-1-convoJSON.otherUserUnReadMessageCount;
+        userMessages[otherUserLastMessageReadPosition].renderOtherUserMessageRead = true;
+      }
       conversations[i] = convoJSON;
     }
 
-    res.cookie("csrfToken", req.csrfToken(), { expires: new Date(Date.now() + 86400), });
+    res.cookie("csrfToken", req.csrfToken(), { expires: new Date(Date.now() + 864000), });
     res.json(conversations);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// update a conversation's messages unread count to 0
+router.put("/:conversationId", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { conversationId } = req.params;
+    const conversation = await Conversation.getConversationByUserIdAndConversationId(conversationId, req.user.id);
+    if (!conversation) {
+      return res.sendStatus(403);
+    }
+    if (conversation.user1Id === req.user.id) {
+      await conversation.update({ user1UnreadMessageCount: "0" }, {
+        silent: true
+      });
+    } else {
+      await conversation.update({ user2UnreadMessageCount: "0" }, {
+        silent: true
+      });
+    }
+    res.json({ conversation });
   } catch (error) {
     next(error);
   }
