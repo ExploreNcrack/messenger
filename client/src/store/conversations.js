@@ -4,6 +4,9 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
+  setConversationUnreadMessageCountToStore,
+  resetOtherUserConversationUnreadMessageCountToZeroToStore,
+  incrementOtherUserConversationUnreadMessageCountToStore,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -15,6 +18,12 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
+const SET_CONVERSATION_UNREAD_MESSAGE_COUNT =
+  "SET_CONVERSATION_UNREAD_MESSAGE_COUNT";
+const RESET_OTHER_USER_CONVERSATION_UNREAD_MESSAGE_COUNT_TO_ZERO =
+  "RESET_OTHER_USER_CONVERSATION_UNREAD_MESSAGE_COUNT_TO_ZERO";
+const INCREMENT_OTHER_USER_CONVERSATION_UNREAD_MESSAGE_COUNT =
+  "INCREMENT_OTHER_USER_CONVERSATION_UNREAD_MESSAGE_COUNT";
 
 // ACTION CREATORS
 
@@ -67,6 +76,32 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
+export const setConversationUnreadMessageCount = (conversationId, newCount) => {
+  return {
+    type: SET_CONVERSATION_UNREAD_MESSAGE_COUNT,
+    payload: { conversationId, newCount },
+  };
+};
+
+export const resetOtherUserConversationUnreadMessageCountToZero = (
+  conversationId,
+  userId
+) => {
+  return {
+    type: RESET_OTHER_USER_CONVERSATION_UNREAD_MESSAGE_COUNT_TO_ZERO,
+    payload: { conversationId, userId },
+  };
+};
+
+export const incrementOtherUserConversationUnreadMessageCount = (
+  conversationId
+) => {
+  return {
+    type: INCREMENT_OTHER_USER_CONVERSATION_UNREAD_MESSAGE_COUNT,
+    payload: { conversationId },
+  };
+};
+
 // REDUCER
 
 const reducer = (state = [], action) => {
@@ -90,6 +125,18 @@ const reducer = (state = [], action) => {
         state,
         action.payload.recipientId,
         action.payload.newMessage
+      );
+    case SET_CONVERSATION_UNREAD_MESSAGE_COUNT:
+      return setConversationUnreadMessageCountToStore(state, action.payload);
+    case RESET_OTHER_USER_CONVERSATION_UNREAD_MESSAGE_COUNT_TO_ZERO:
+      return resetOtherUserConversationUnreadMessageCountToZeroToStore(
+        state,
+        action.payload
+      );
+    case INCREMENT_OTHER_USER_CONVERSATION_UNREAD_MESSAGE_COUNT:
+      return incrementOtherUserConversationUnreadMessageCountToStore(
+        state,
+        action.payload
       );
     default:
       return state;
