@@ -24,15 +24,15 @@ router.post("/register", async (req, res, next) => {
     const token = jwt.sign(
       { id: user.dataValues.id },
       process.env.SESSION_SECRET,
-      { expiresIn: 86400 }
+      { expiresIn: 864000 }
     );
 
     // set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      expires: new Date(Date.now() + 86400),
+      expires: new Date(Date.now() + 864000),
     });
-
+    req.session.userId = user.id;
     res.json({
       ...user.dataValues,
     });
@@ -68,13 +68,14 @@ router.post("/login", async (req, res, next) => {
       const token = jwt.sign(
         { id: user.dataValues.id },
         process.env.SESSION_SECRET,
-        { expiresIn: 86400 }
+        { expiresIn: 864000 }
       );
       // set cookie
       res.cookie("token", token, {
         httpOnly: true,
-        expires: new Date(Date.now() + 86400),
+        expires: new Date(Date.now() + 864000),
       });
+      req.session.userId = user.id;
       res.json({
         ...user.dataValues,
       });
@@ -88,6 +89,7 @@ router.delete("/logout", (req, res, next) => {
   // Clearing the cookie
   res.clearCookie("token", { httpOnly: true });
   res.clearCookie("csrfToken");
+  res.clearCookie("connect.sid", { httpOnly: true });
   res.sendStatus(204);
 });
 
